@@ -23,7 +23,7 @@ function getMovies(){
     // get the value of the input
     let page = 1
     let input = document.getElementById('user-input').value
-    let url = `${omdbUrl}?apikey=${omdbKey}&s=${input}&type=${omdbType}&page=${page}`
+    let url = `${omdbUrl}?apikey=${omdbKey}&s=${input}&type=${omdbType}&page=`
    
 
     fetch(url)
@@ -54,19 +54,50 @@ function getMovies(){
                 </div>
             `
 
-            
+
             });
+            
+            outputAllMovies.innerHTML = output;
             document.getElementById('next').addEventListener('click', (e)=> {
                 console.log(e)
-                page + 1
-                console.log(url + `${page}`)
-                console.log('clickeeed')
-                console.log(data)
+                let next = url + `${page}`
+                page++
+                fetch(next)
+                .then(response => response.json())
+                .then(data => {
+                   data.Search.forEach(movie => {
+                    output += `
+                    <div>
+                    <ul>
+                        <li id="${movie.imdbID}" class="card" onclick="getMovieDetail(${movie.imdbID})">
+                        <img src="${movie.Poster}" class="custom-img" alt="poster">
+                            <p class="title-text">${movie.Title}</p>
+                            <p>Year: ${movie.Year}</p>
+                            <a id="redirect">
+                            <button class="detail">See movie detail</button>
+                            </a>
+                            
+                        </li>
+                        
+                    </ul>
+         
+                    </div>
+                `
+                   })
+
+
+                })
+                if(e) {
+                    outputAllMovies.innerHTML = '';
+                    document.getElementById('next-output').innerHTML = output
+                } else {
+                    outputAllMovies.innerHTML = output;
+                }
             });
-            
-        
+
+
             // show the data on the view
-            outputAllMovies.innerHTML = output;
+           
             // clear the input on click
             input.value = '';
             // clear the movie detail on search again
