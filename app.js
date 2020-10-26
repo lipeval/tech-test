@@ -25,13 +25,14 @@ function getMovies(){
     let input = document.getElementById('user-input').value
     let url = `${omdbUrl}?apikey=${omdbKey}&s=${input}&type=${omdbType}&page=`
    
-
+    let output = '';
     fetch(url)
     .then(response => response.json())
     .then(data => {
         console.log(data)
         if(data.Response === 'True') {
-            let output = '';
+            
+            let output2 = ''
             // sort the dates from newest to oldest
             data.Search.sort((a, b) => b.Year - a.Year)
             data.Search.forEach((movie) => {
@@ -58,6 +59,7 @@ function getMovies(){
             });
             
             outputAllMovies.innerHTML = output;
+
             document.getElementById('next').addEventListener('click', (e)=> {
                 console.log(e)
                 let next = url + `${page}`
@@ -66,7 +68,7 @@ function getMovies(){
                 .then(response => response.json())
                 .then(data => {
                    data.Search.forEach(movie => {
-                    output += `
+                    output2 = `
                     <div>
                     <ul>
                         <li id="${movie.imdbID}" class="card" onclick="getMovieDetail(${movie.imdbID})">
@@ -89,9 +91,7 @@ function getMovies(){
                 })
                 if(e) {
                     outputAllMovies.innerHTML = '';
-                    document.getElementById('next-output').innerHTML = output
-                } else {
-                    outputAllMovies.innerHTML = output;
+                    document.getElementById('next-output').innerHTML = output2
                 }
             });
 
@@ -152,6 +152,10 @@ function getMovieDetail(e) {
         outputAllMovies.innerHTML = '';
         // show the data on single Movie detail view
         outPutSingleMovie.innerHTML = singleOutput;
+
+        document.getElementById('next-output').innerHTML = ''
+
+
 
     })
 }
